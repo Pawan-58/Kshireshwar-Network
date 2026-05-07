@@ -67,21 +67,39 @@
     <div class="foot">New to Kshireshwar? <a class="link" href="register.html">Create an account</a></div>
   </div>
 
-  <script>
+  <script type="module">
+    import { auth } from './firebase.js';
+    import { signInWithEmailAndPassword } from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js';
+
     const params = new URLSearchParams(window.location.search);
     const next = params.get('next') || 'kshireshwar_dashboard.html';
 
     function makeToken(){ return 'token_' + Math.random().toString(36).slice(2); }
     function clearErrors(){ document.getElementById('identifierError').textContent=''; document.getElementById('passwordError').textContent=''; }
 
-    document.getElementById('signinForm').addEventListener('submit', (e)=>{
+    document.getElementById('signinForm').addEventListener('submit', async (e)=>{
       e.preventDefault(); clearErrors();
       const id = document.getElementById('identifier').value.trim();
       const pw = document.getElementById('password').value;
       if(!id){ document.getElementById('identifierError').textContent='Enter username or email.'; return; }
       if(!pw){ document.getElementById('passwordError').textContent='Enter your password.'; return; }
 
-      // simple demo auth (preserve previous behavior)
+      // If Firebase is configured, prefer server auth
+      if(auth){
+        try{
+          await signInWithEmailAndPassword(auth, id, pw);
+          // on success, store a simple client-side marker and redirect
+          const token = makeToken(); const user = { email: id };
+          localStorage.setItem('kshireshwar_auth', JSON.stringify({ token, user, createdAt: new Date().toISOString() }));
+          window.location.href = next;
+          return;
+        }catch(err){
+          document.getElementById('passwordError').textContent = err.message || 'Sign-in failed';
+          return;
+        }
+      }
+
+      // Fallback: simple demo/local auth
       const stored = JSON.parse(localStorage.getItem('kshireshwar_user') || 'null');
       let user = null;
       if(id.toLowerCase && id.toLowerCase() === 'demo@kshireshwar.com' && pw === 'demo123'){
@@ -96,8 +114,8 @@
 
       if(!user){ if(!confirm('Credentials not found. Create a local demo account with these credentials?')) return; const newUser = { fullname: id.split('@')[0] || id, email: id.includes('@')? id : '', phone: id.match(/^\\d+$/)? id : '', password: pw }; const users = JSON.parse(localStorage.getItem('kshireshwar_users')||'[]'); users.push(newUser); localStorage.setItem('kshireshwar_users', JSON.stringify(users)); localStorage.setItem('kshireshwar_user', JSON.stringify(newUser)); user = { name: newUser.fullname, email: newUser.email }; }
 
-      const token = makeToken(); const auth = { token, user, createdAt: new Date().toISOString() };
-      localStorage.setItem('kshireshwar_auth', JSON.stringify(auth));
+      const token = makeToken(); const authLocal = { token, user, createdAt: new Date().toISOString() };
+      localStorage.setItem('kshireshwar_auth', JSON.stringify(authLocal));
       window.location.href = next;
     });
 

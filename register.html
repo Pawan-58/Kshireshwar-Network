@@ -59,7 +59,10 @@
     </div>
   </div>
 
-  <script>
+  <script type="module">
+    import { auth } from './firebase.js';
+    import { createUserWithEmailAndPassword } from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js';
+
     const params = new URLSearchParams(window.location.search);
     const next = params.get('next') || 'kshireshwar_dashboard.html';
 
@@ -69,7 +72,7 @@
     function getUsers(){ try{ return JSON.parse(localStorage.getItem('kshireshwar_users')||'[]') }catch(e){return []} }
     function saveUser(u){ const users = getUsers(); users.push(u); localStorage.setItem('kshireshwar_users', JSON.stringify(users)); localStorage.setItem('kshireshwar_user', JSON.stringify(u)); }
 
-    document.getElementById('regForm').addEventListener('submit', (e)=>{
+    document.getElementById('regForm').addEventListener('submit', async (e)=>{
       e.preventDefault();
       const full = document.getElementById('fullname').value.trim();
       const phone = document.getElementById('phone').value.trim();
@@ -84,7 +87,20 @@
       if(!pw || pw.length < 6){ msg.textContent='Password must be at least 6 characters.'; document.getElementById('password').focus(); return; }
       if(pw !== conf){ msg.textContent='Passwords do not match.'; document.getElementById('confirm').focus(); return; }
 
-      // check duplicates
+      // If Firebase is configured, create account there
+      if(auth){
+        try{
+          const userCredential = await createUserWithEmailAndPassword(auth, email, pw);
+          // on success, store minimal local marker and redirect
+          const user = { fullname: full, email, phone, plan };
+          localStorage.setItem('kshireshwar_user', JSON.stringify(user));
+          localStorage.setItem('kshireshwar_auth', JSON.stringify({ token: makeToken(), user, createdAt: new Date().toISOString() }));
+          window.location.href = next;
+          return;
+        }catch(err){ msg.textContent = err.message || 'Registration failed'; return; }
+      }
+
+      // Fallback: localStorage registration
       const users = getUsers();
       if(users.find(u => (u.email && email && u.email.toLowerCase()===email.toLowerCase()) || (u.phone && u.phone===phone))){ msg.textContent='An account with this email or phone already exists.'; return; }
 
@@ -92,8 +108,8 @@
       saveUser(user);
 
       // set auth and redirect
-      const auth = { token: makeToken(), user, createdAt: new Date().toISOString() };
-      localStorage.setItem('kshireshwar_auth', JSON.stringify(auth));
+      const authLocal = { token: makeToken(), user, createdAt: new Date().toISOString() };
+      localStorage.setItem('kshireshwar_auth', JSON.stringify(authLocal));
 
       // redirect to next
       window.location.href = next;
