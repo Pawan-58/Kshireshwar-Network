@@ -1,0 +1,100 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Khireshwar Network — Hub</title>
+  <link rel="stylesheet" href="index.css">
+  <style>
+    :root{--accent:#0366d6;--muted:#6b7280}
+    body{font-family:system-ui,-apple-system,Segoe UI,Roboto,'Helvetica Neue',Arial;margin:24px;background:#f8fafc}
+    .container{max-width:1100px;margin:0 auto}
+    header h1{margin:0 0 8px}
+    nav ul{list-style:none;padding:0;margin:12px 0 20px;display:flex;flex-direction:column;gap:10px}
+    a.button{display:inline-block;padding:10px 14px;background:var(--accent);color:#fff;border-radius:8px;text-decoration:none;box-shadow:0 1px 0 rgba(0,0,0,0.04)}
+    .card{background:#fff;border-radius:10px;padding:18px;border:1px solid #eef2f7}
+    #api-tester{margin-top:18px}
+    #result{white-space:pre-wrap;background:#0b1220;color:#e6eef8;padding:12px;border-radius:6px;min-height:80px}
+    label{display:block;margin:8px 0 6px;font-size:0.95rem;color:var(--muted)}
+    input,select,textarea{font:inherit;padding:10px;border:1px solid #d1d5db;border-radius:8px;width:100%;box-sizing:border-box}
+    .row{display:flex;gap:12px;align-items:center}
+    @media(min-width:700px){nav ul{flex-direction:row}}
+  </style>
+</head>
+<body>
+  <div class="container">
+    <header>
+      <h1>Khireshwar Network</h1>
+      <p style="color:var(--muted);margin-top:6px">Professional hub to open frontend pages and call backend endpoints.</p>
+    </header>
+
+    <nav>
+      <ul>
+        <li><a class="button" href="kshireshwar_network_website.html">Open network website</a></li>
+        <li><a class="button" href="kshireshwar_dashboard.html">Open dashboard</a></li>
+        <li><a class="button" href="KSHIRESHWAR_DOCUMENTATION.md">Open documentation</a></li>
+        <li><a class="button" href="assets/">Open assets folder</a></li>
+      </ul>
+    </nav>
+
+    <section id="api-tester" class="card">
+      <h2 style="margin:0 0 8px">API tester</h2>
+      <p style="margin:0 0 12px;color:var(--muted)">Quickly call a backend URL from the browser. Use full URLs (<code>https://...</code>) or relative paths served by your backend (e.g., <code>/api/status</code>).</p>
+
+      <form id="apiForm">
+        <label for="endpoint">Endpoint</label>
+        <input id="endpoint" placeholder="/api/health or https://example.com/api" required>
+
+        <div style="margin-top:10px;max-width:260px">
+          <label for="method">Method</label>
+          <select id="method"><option>GET</option><option>POST</option><option>PUT</option><option>DELETE</option></select>
+        </div>
+
+        <label for="body">Body (JSON, optional)</label>
+        <textarea id="body" placeholder='{"key":"value"}' style="height:120px"></textarea>
+
+        <div style="margin-top:12px;display:flex;gap:10px;align-items:center">
+          <button type="submit" class="button">Send request</button>
+          <button type="button" id="clear" style="padding:10px 12px;border-radius:8px;border:1px solid #d1d5db;background:#fff">Clear</button>
+        </div>
+      </form>
+
+      <h3 style="margin-top:16px">Result</h3>
+      <pre id="result">No request sent yet.</pre>
+    </section>
+  </div>
+
+  <script>
+    const form = document.getElementById('apiForm');
+    const result = document.getElementById('result');
+    document.getElementById('clear').addEventListener('click', ()=>{document.getElementById('endpoint').value='';document.getElementById('body').value='';result.textContent='No request sent yet.'});
+
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const endpoint = document.getElementById('endpoint').value.trim();
+      const method = document.getElementById('method').value;
+      let body = document.getElementById('body').value.trim();
+
+      if(!endpoint){ result.textContent='Please provide an endpoint.'; return }
+
+      const opts = { method, mode: 'cors' };
+      if (body && method !== 'GET') {
+        try { opts.body = JSON.stringify(JSON.parse(body)); opts.headers = { 'Content-Type': 'application/json' } }
+        catch (err) { result.textContent = 'Invalid JSON body: ' + err; return }
+      }
+
+      result.textContent = 'Sending...';
+      try {
+        const res = await fetch(endpoint, opts);
+        const contentType = res.headers.get('content-type') || '';
+        let text;
+        if (contentType.includes('application/json')) text = JSON.stringify(await res.json(), null, 2);
+        else text = await res.text();
+        result.textContent = `Status: ${res.status} ${res.statusText}\n\n${text}`;
+      } catch (err) {
+        result.textContent = 'Request failed: ' + err;
+      }
+    });
+  </script>
+</body>
+</html>

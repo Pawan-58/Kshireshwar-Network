@@ -1,0 +1,102 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Payment — Kshireshwar Network</title>
+  <link rel="stylesheet" href="index.css">
+  <style>
+    body{font-family:system-ui,-apple-system,Segoe UI,Roboto,'Helvetica Neue',Arial;background:#f6f9fb;margin:0}
+    .container{max-width:900px;margin:40px auto;padding:20px}
+    .card{background:#fff;padding:20px;border-radius:10px;border:1px solid #e6eef6}
+    .summary{display:grid;grid-template-columns:1fr 320px;gap:18px}
+    .line{display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px dashed #eef2f7}
+    .total{font-weight:700;font-size:1.15rem}
+    .btn{padding:10px 14px;border-radius:8px;border:none;cursor:pointer}
+    .btn-primary{background:#0366d6;color:#fff}
+    .muted{color:#6b7280}
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="card">
+      <h1>Payment summary</h1>
+      <p class="muted">Review details and proceed to payment.</p>
+
+      <div id="content" style="margin-top:14px"></div>
+    </div>
+  </div>
+
+  <script>
+    const container = document.getElementById('content');
+    const dataRaw = localStorage.getItem('kshireshwar_new_conn');
+    if(!dataRaw){
+      container.innerHTML = `<p class="muted">No application found. Please start a new connection <a href="new_connection.html">here</a>.</p>`;
+    } else {
+      const d = JSON.parse(dataRaw);
+      // price map
+      const prices = { 'Home Starter':1050, 'Home Pro':1450, 'Home Max':2100 };
+      const planPrice = prices[d.plan] || 0;
+      const totalNow = planPrice + 500;
+
+      container.innerHTML = `
+        <div class="summary">
+          <div>
+            <h3>Applicant</h3>
+            <div class="line"><div>Order ID</div><div><strong>${escapeHtml(d.orderId||'—')}</strong></div></div>
+            <div class="line"><div>Name</div><div>${escapeHtml(d.fullname)}</div></div>
+            <div class="line"><div>Phone</div><div>${escapeHtml(d.phone)}</div></div>
+            <div class="line"><div>Email</div><div>${escapeHtml(d.email||'—')}</div></div>
+            <div class="line"><div>Address</div><div>${escapeHtml(d.address)}</div></div>
+            <div class="line"><div>Install date</div><div>${escapeHtml(d.installDate||'ASAP')}</div></div>
+            <div style="margin-top:10px"><strong>Notes</strong><div class="muted">${escapeHtml(d.notes||'—')}</div></div>
+          </div>
+          <div>
+            <h3>Order</h3>
+            <div class="line"><div>Plan</div><div>${escapeHtml(d.plan)}</div></div>
+            <div class="line"><div>Monthly price</div><div>Rs. ${planPrice}</div></div>
+            <div class="line"><div>Installation fee</div><div>Rs. 500</div></div>
+            <div class="line total"><div>Total due now</div><div>Rs. ${totalNow}</div></div>
+            <div style="margin-top:14px;display:flex;gap:10px">
+              <button id="payNow" class="btn btn-primary">Proceed to Pay (Demo)</button>
+              <button id="print" class="btn" style="background:#fff;border:1px solid #d1d5db;padding:10px 12px;border-radius:8px">Print Receipt</button>
+              <a href="new_connection.html" class="btn" style="background:#fff;border:1px solid #d1d5db;padding:10px 12px;border-radius:8px">Edit</a>
+            </div>
+          </div>
+        </div>
+      `;
+
+      document.getElementById('payNow').addEventListener('click', async ()=>{
+        // disable and show processing
+        const btn = document.getElementById('payNow');
+        btn.disabled = true; btn.textContent = 'Processing…';
+
+        // attempt optional server call to create payment intent
+        let paid = false;
+        try{
+          const resp = await fetch('/api/create-payment', {method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({orderId: d.orderId, amount: totalNow})});
+          if(resp.ok){
+            const j = await resp.json();
+            paid = !!j.success;
+          }
+        }catch(e){ console.warn('Payment API not available', e); }
+
+        // Demo fallback: mark as submitted
+        localStorage.setItem('kshireshwar_new_conn_submitted', JSON.stringify({submittedAt: new Date().toISOString(), data: d, paid}));
+
+        container.innerHTML = `<div style="padding:20px;background:#f8fffa;border:1px solid #dff3e6;border-radius:8px"><h2 style="color:#047857">Application ${paid? 'paid & ' : ''}submitted</h2><p class="muted">Thank you, ${escapeHtml(d.fullname)}. Your application has been received. Order ID: <strong>${escapeHtml(d.orderId||'—')}</strong>.</p><p><a href="kshireshwar_network_website.html">Return to site</a> · <a href="new_connection.html">Start another</a></p></div>`;
+      });
+
+      document.getElementById('print').addEventListener('click', ()=>{
+        // create a small printable receipt window
+        const w = window.open('','_blank','width=600,height=700');
+        w.document.write(`<html><head><title>Receipt ${escapeHtml(d.orderId||'')}</title></head><body><h2>Kshireshwar Network</h2><p>Order ID: ${escapeHtml(d.orderId||'—')}</p><p>Name: ${escapeHtml(d.fullname)}</p><p>Plan: ${escapeHtml(d.plan)} — Rs. ${planPrice}</p><p>Installation: Rs. 500</p><p>Total: Rs. ${totalNow}</p><p>Submitted: ${new Date().toLocaleString()}</p></body></html>`);
+        w.document.close();
+        w.print();
+      });
+    }
+
+    function escapeHtml(s){ if(!s) return ''; return s.replaceAll('&','&amp;').replaceAll('<','&lt;').replaceAll('>','&gt;').replaceAll('"','&quot;'); }
+  </script>
+</body>
+</html>

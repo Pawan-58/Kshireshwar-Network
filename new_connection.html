@@ -1,0 +1,139 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>New Connection — Kshireshwar Network</title>
+  <link rel="stylesheet" href="index.css">
+  <style>
+    body{font-family:system-ui,-apple-system,Segoe UI,Roboto,'Helvetica Neue',Arial;background:#f6f9fb;margin:0}
+    .container{max-width:900px;margin:40px auto;padding:20px}
+    .card{background:#fff;padding:20px;border-radius:10px;border:1px solid #e6eef6}
+    h1{margin:0 0 8px}
+    label{display:block;margin:12px 0 6px;font-weight:600}
+    input,select,textarea{width:100%;padding:10px;border-radius:8px;border:1px solid #d1d5db}
+    .row{display:flex;gap:12px}
+    .col{flex:1}
+    .actions{display:flex;gap:12px;margin-top:14px}
+    .btn{padding:10px 14px;border-radius:8px;border:none;cursor:pointer}
+    .btn-primary{background:#0366d6;color:#fff}
+    .btn-ghost{background:#fff;border:1px solid #d1d5db}
+    .muted{color:#6b7280}
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="card">
+      <h1>New Connection</h1>
+      <p class="muted">Fill your details. After submission you'll be taken to the payment summary page.</p>
+
+      <form id="newConnForm" novalidate>
+        <label for="fullname">Full name</label>
+        <input id="fullname" name="fullname" required placeholder="Your full name" autocomplete="name">
+
+        <label for="phone">Phone number</label>
+        <input id="phone" name="phone" required placeholder="98XXXXXXXX" inputmode="numeric" pattern="[0-9]{7,15}" maxlength="15" autocomplete="tel">
+
+        <label for="email">Email address</label>
+        <input id="email" name="email" type="email" placeholder="you@example.com" autocomplete="email">
+
+        <label for="address">Installation address</label>
+        <textarea id="address" name="address" rows="3" placeholder="House no, Street, City, Area" required></textarea>
+
+        <div class="row" style="margin-top:6px">
+          <div class="col">
+            <label for="plan">Choose plan</label>
+            <select id="plan" name="plan">
+              <option value="Home Starter">Home Starter — Rs.1050/mo</option>
+              <option value="Home Pro">Home Pro — Rs.1450/mo</option>
+              <option value="Home Max">Home Max — Rs.2100/mo</option>
+            </select>
+          </div>
+          <div class="col">
+            <label for="installDate">Preferred installation date</label>
+            <input id="installDate" name="installDate" type="date">
+          </div>
+        </div>
+
+        <label for="notes">Notes (optional)</label>
+        <textarea id="notes" name="notes" rows="2" placeholder="Gate code, nearby landmark, etc."></textarea>
+
+        <div class="actions">
+          <button id="submitBtn" class="btn btn-primary" type="submit">Continue to Payment</button>
+          <a class="btn btn-ghost" href="kshireshwar_network_website.html">Cancel</a>
+        </div>
+        <div id="formMsg" style="margin-top:10px;color:#6b7280"></div>
+      </form>
+    </div>
+  </div>
+
+  <script>
+    const form = document.getElementById('newConnForm');
+    const submitBtn = document.getElementById('submitBtn');
+    const formMsg = document.getElementById('formMsg');
+
+    function makeOrderId(){
+      return 'KN-' + Date.now().toString(36).toUpperCase() + '-' + Math.random().toString(36).slice(2,8).toUpperCase();
+    }
+
+    function validatePhone(phone){
+      // basic numeric check (7-15 digits)
+      return /^[0-9]{7,15}$/.test(phone);
+    }
+
+    async function postToServer(url, payload){
+      try{
+        const res = await fetch(url, {method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(payload)});
+        if(!res.ok) throw new Error('Server error '+res.status);
+        return await res.json();
+      }catch(err){
+        console.warn('Server POST failed', err);
+        return null; // caller will fallback
+      }
+    }
+
+    form.addEventListener('submit', async (e)=>{
+      e.preventDefault();
+      formMsg.textContent = '';
+
+      const data = {
+        fullname: document.getElementById('fullname').value.trim(),
+        phone: document.getElementById('phone').value.trim(),
+        email: document.getElementById('email').value.trim(),
+        address: document.getElementById('address').value.trim(),
+        plan: document.getElementById('plan').value,
+        installDate: document.getElementById('installDate').value,
+        notes: document.getElementById('notes').value.trim(),
+      };
+
+      // validation
+      if(!data.fullname){ formMsg.textContent='Full name is required.'; document.getElementById('fullname').focus(); return; }
+      if(!validatePhone(data.phone)){ formMsg.textContent='Please enter a valid phone number (digits only).'; document.getElementById('phone').focus(); return; }
+      if(!data.address){ formMsg.textContent='Installation address is required.'; document.getElementById('address').focus(); return; }
+
+      // prepare order
+      const orderId = makeOrderId();
+      const payload = { orderId, createdAt: new Date().toISOString(), ...data };
+
+      // disable UI
+      submitBtn.disabled = true; submitBtn.textContent = 'Submitting…';
+      form.setAttribute('aria-busy','true');
+
+      // Try server POST (optional) - expects an endpoint '/api/new-connection'
+      const serverResp = await postToServer('/api/new-connection', payload);
+      if(serverResp && serverResp.orderId){
+        // server accepted and returned an orderId
+        payload.orderId = serverResp.orderId;
+        payload.serverResponse = serverResp;
+      }
+
+      // save to localStorage as primary durable store for the demo
+      localStorage.setItem('kshireshwar_new_conn', JSON.stringify(payload));
+      localStorage.removeItem('kshireshwar_new_conn_submitted');
+
+      // redirect to payment page
+      window.location.href = 'payment.html';
+    });
+  </script>
+</body>
+</html>

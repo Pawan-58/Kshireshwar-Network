@@ -3,421 +3,288 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="Kshireshwar Network - High-Speed Internet Services in Nepal">
-    <title>Kshireshwar Network | Fast & Reliable Internet</title>
+    <meta name="description" content="Kshireshwar Network - High-Speed Internet Services in Nepal. Explore our broadband plans, business solutions, and more.">
+    <title>Kshireshwar Network | The Future of Connectivity</title>
     
     <!-- Design System -->
     <link rel="stylesheet" href="index.css">
     <!-- Lucide Icons -->
     <script src="https://unpkg.com/lucide@latest"></script>
-    
-    <style>
-        /* Website Specific Styles */
-        .glass-header {
-            position: sticky;
-            top: 0;
-            z-index: 1000;
-            background: rgba(255, 255, 255, 0.8);
-            backdrop-filter: blur(10px);
-            border-bottom: 1px solid var(--border-color);
-            transition: var(--transition);
-        }
-
-        .header-container {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            height: 80px;
-        }
-
-        .logo {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            font-size: 1.5rem;
-            font-weight: 800;
-            color: var(--navy);
-            text-decoration: none;
-            font-family: 'Outfit', sans-serif;
-        }
-
-        .logo span {
-            background: linear-gradient(45deg, var(--primary), var(--secondary));
-            -webkit-background-clip: text;
-            background-clip: text;
-            -webkit-text-fill-color: transparent;
-        }
-
-        .nav-links {
-            display: flex;
-            gap: 2.5rem;
-            align-items: center;
-        }
-
-        .nav-links a {
-            text-decoration: none;
-            color: var(--text-body);
-            font-weight: 600;
-            font-size: 0.9375rem;
-            transition: var(--transition);
-        }
-
-        .nav-links a:hover {
-            color: var(--primary);
-        }
-
-        /* Hero Section */
-        .hero {
-            position: relative;
-            padding: 160px 0 120px;
-            background: linear-gradient(rgba(0, 31, 77, 0.85), rgba(0, 31, 77, 0.7)), url('assets/hero-bg.png');
-            background-size: cover;
-            background-position: center;
-            color: white;
-            text-align: center;
-            overflow: hidden;
-        }
-
-        .hero h1 {
-            font-size: 4rem;
-            line-height: 1.1;
-            margin-bottom: 1.5rem;
-            color: white;
-            max-width: 900px;
-            margin-left: auto;
-            margin-right: auto;
-        }
-
-        .hero p {
-            font-size: 1.25rem;
-            color: rgba(255, 255, 255, 0.9);
-            margin-bottom: 2.5rem;
-            max-width: 600px;
-            margin-left: auto;
-            margin-right: auto;
-        }
-
-        /* Section Styling */
-        section {
-            padding: 100px 0;
-        }
-
-        .section-header {
-            text-align: center;
-            margin-bottom: 60px;
-        }
-
-        .section-header h2 {
-            font-size: 2.5rem;
-            margin-bottom: 1rem;
-        }
-
-        .section-header p {
-            color: var(--text-muted);
-            font-size: 1.125rem;
-        }
-
-        /* Pricing Cards */
-        .pricing-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-            gap: 2rem;
-        }
-
-        .pricing-card {
-            padding: 3rem 2rem;
-            text-align: center;
-            position: relative;
-        }
-
-        .pricing-card.featured {
-            border: 2px solid var(--primary);
-            transform: scale(1.05);
-            background: white;
-            z-index: 2;
-        }
-
-        .badge {
-            position: absolute;
-            top: 20px;
-            right: 20px;
-            background: var(--primary);
-            color: white;
-            padding: 4px 12px;
-            border-radius: 20px;
-            font-size: 0.75rem;
-            font-weight: 700;
-        }
-
-        .price {
-            font-size: 3rem;
-            font-weight: 800;
-            color: var(--navy);
-            margin: 1.5rem 0;
-        }
-
-        .price span {
-            font-size: 1rem;
-            color: var(--text-muted);
-            font-weight: 400;
-        }
-
-        .features-list {
-            list-style: none;
-            margin: 2rem 0;
-            text-align: left;
-        }
-
-        .features-list li {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            margin-bottom: 1rem;
-            font-size: 0.9375rem;
-        }
-
-        .features-list i {
-            color: var(--success);
-            width: 18px;
-        }
-
-        /* Mobile Menu */
-        .mobile-menu-btn {
-            display: none;
-            background: none;
-            border: none;
-            cursor: pointer;
-            color: var(--navy);
-        }
-
-        @media (max-width: 1024px) {
-            .hero h1 { font-size: 3rem; }
-            .nav-links { display: none; }
-            .mobile-menu-btn { display: block; }
-            
-            .pricing-card.featured {
-                transform: scale(1);
-            }
-        }
-
-        @media (max-width: 640px) {
-            .hero h1 { font-size: 2.5rem; }
-            .hero { padding: 100px 0 80px; }
-            section { padding: 60px 0; }
-        }
-    </style>
 </head>
 <body>
 
-    <!-- HEADER -->
-    <header class="glass-header">
-        <div class="container header-container">
-            <a href="#" class="logo">
-                <i data-lucide="glob"></i>
-                <span>Kshireshwar <strong>Network</strong></span>
-            </a>
-            
-            <nav class="nav-links">
-                <a href="#plans">Plans</a>
-                <a href="#services">Services</a>
-                <a href="#about">About</a>
-                <a href="#contact">Contact</a>
-                <a href="kshireshwar_dashboard.html" class="btn btn-secondary">
-                    <i data-lucide="user"></i> My Account
-                </a>
-                <button class="btn btn-primary">Get Started</button>
-            </nav>
-
-            <button class="mobile-menu-btn" onclick="toggleMobileMenu()">
-                <i data-lucide="menu"></i>
-            </button>
-        </div>
-    </header>
-
-    <!-- MOBILE MENU OVERLAY -->
-    <div id="mobile-menu" style="display: none; position: fixed; inset: 0; background: white; z-index: 2000; padding: 2rem;">
-        <div style="display: flex; justify-content: space-between; margin-bottom: 3rem;">
-            <div class="logo"><span>KN</span></div>
-            <button onclick="toggleMobileMenu()"><i data-lucide="x"></i></button>
-        </div>
-        <div style="display: flex; flex-direction: column; gap: 2rem; font-size: 1.5rem; font-weight: 700;">
-            <a href="#plans" onclick="toggleMobileMenu()">Plans</a>
-            <a href="#services" onclick="toggleMobileMenu()">Services</a>
-            <a href="#about" onclick="toggleMobileMenu()">About</a>
-            <a href="#contact" onclick="toggleMobileMenu()">Contact</a>
-            <hr>
-            <a href="kshireshwar_dashboard.html">My Account</a>
-            <button class="btn btn-primary" style="width: 100%;">Get Started</button>
+    <!-- TOP ACTION BAR -->
+    <div class="top-bar">
+        <div class="container">
+            <div class="top-links">
+                <a href="#"><i data-lucide="phone" style="width: 14px; height: 14px;"></i> 980-0000000</a>
+                <a href="#"><i data-lucide="mail" style="width: 14px; height: 14px;"></i> support@kshireshwar.com.np</a>
+            </div>
+            <div class="top-links">
+                <a href="#">Refer Offer</a>
+                <a href="#">Speed Test</a>
+                <a href="kshireshwar_dashboard.html">Self Care</a>
+            </div>
         </div>
     </div>
 
-    <!-- HERO -->
+    <!-- MAIN HEADER -->
+    <header class="header" id="mainHeader">
+        <div class="container nav-container">
+            <a href="#" class="logo">
+                <i data-lucide="globe-2"></i>
+                Kshireshwar
+            </a>
+            
+            <nav class="nav-links">
+                <a href="#residential" class="nav-link">Residential</a>
+                <a href="#sme" class="nav-link">SME+</a>
+                <a href="#enterprise" class="nav-link">Enterprise</a>
+                <a href="#offers" class="nav-link">Offers</a>
+                <a href="#support" class="nav-link">Support</a>
+            </nav>
+
+            <div class="nav-actions">
+                <a href="signin.html" class="btn btn-outline">
+                    <i data-lucide="user"></i> Login
+                </a>
+                <a class="btn btn-primary" href="new_connection.html">
+                    <i data-lucide="zap"></i> Get Connection
+                </a>
+            </div>
+        </div>
+    </header>
+
+    <!-- HERO SECTION -->
     <section class="hero">
-        <div class="container animate-fade-in">
-            <h1>Experience the Future of <strong>Connectivity</strong></h1>
-            <p>High-speed fiber optic internet designed for the modern lifestyle. Blazing fast, ultra-reliable, and locally supported.</p>
-            <div style="display: flex; gap: 1rem; justify-content: center; flex-wrap: wrap;">
-                <button class="btn btn-primary" style="padding: 1rem 2.5rem; font-size: 1.1rem;">
-                    View Packages <i data-lucide="arrow-right"></i>
-                </button>
-                <button class="btn btn-secondary" style="padding: 1rem 2.5rem; font-size: 1.1rem; background: rgba(255,255,255,0.1); color: white; border-color: rgba(255,255,255,0.3); backdrop-filter: blur(10px);">
-                    Check Coverage
-                </button>
+        <div class="container hero-content animate-up">
+            <div class="hero-badge">🏆 Nepal's Fastest Growing Network</div>
+            <h1>Elevate Your Digital Life with <strong>Ultra-Speed</strong></h1>
+            <p>Experience seamless streaming, lag-free gaming, and uninterrupted work with our state-of-the-art fiber optic technology.</p>
+            <div class="hero-actions">
+                <button class="btn btn-accent">View Packages</button>
+                <button class="btn btn-outline" style="color: white; border-color: rgba(255,255,255,0.3);">Check Coverage</button>
             </div>
         </div>
     </section>
 
-    <!-- STATS -->
-    <section style="background: white; padding: 60px 0; border-bottom: 1px solid var(--border-color);">
+    <!-- QUICK SERVICES -->
+    <section class="quick-services">
         <div class="container">
-            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 3rem; text-align: center;">
-                <div>
-                    <h3 style="font-size: 2.5rem; color: var(--primary);">50K+</h3>
-                    <p style="color: var(--text-muted);">Happy Customers</p>
-                </div>
-                <div>
-                    <h3 style="font-size: 2.5rem; color: var(--primary);">99.9%</h3>
-                    <p style="color: var(--text-muted);">Service Uptime</p>
-                </div>
-                <div>
-                    <h3 style="font-size: 2.5rem; color: var(--primary);">24/7</h3>
-                    <p style="color: var(--text-muted);">Support Ready</p>
-                </div>
-                <div>
-                    <h3 style="font-size: 2.5rem; color: var(--primary);">&lt; 2ms</h3>
-                    <p style="color: var(--text-muted);">Ultra-low Latency</p>
-                </div>
+            <div class="quick-services-grid">
+                <a href="#" class="qs-card animate-up delay-1">
+                    <div class="qs-icon"><i data-lucide="credit-card"></i></div>
+                    <div class="qs-title">Pay Bill / Renew</div>
+                    <p style="color: var(--text-muted); font-size: 0.875rem;">Instant online renewal</p>
+                </a>
+                <a href="#" class="qs-card animate-up delay-2">
+                    <div class="qs-icon"><i data-lucide="gift"></i></div>
+                    <div class="qs-title">Refer & Earn</div>
+                    <p style="color: var(--text-muted); font-size: 0.875rem;">Get free months of internet</p>
+                </a>
+                <a href="new_connection.html" class="qs-card animate-up delay-3">
+                    <div class="qs-icon"><i data-lucide="user-plus"></i></div>
+                    <div class="qs-title">New Connection</div>
+                    <p style="color: var(--text-muted); font-size: 0.875rem;">Book your installation today</p>
+                </a>
+                <a href="#" class="qs-card animate-up delay-3">
+                    <div class="qs-icon"><i data-lucide="monitor-play"></i></div>
+                    <div class="qs-title">KN-TV</div>
+                    <p style="color: var(--text-muted); font-size: 0.875rem;">Explore entertainment</p>
+                </a>
             </div>
         </div>
     </section>
 
-    <!-- PLANS -->
-    <section id="plans" style="background: var(--bg-main);">
+    <!-- RESIDENTIAL PLANS -->
+    <section id="residential" class="section-padding" style="background: var(--bg-main);">
         <div class="container">
-            <div class="section-header">
-                <h2>Choose Your Perfect <strong>Package</strong></h2>
-                <p>No hidden fees. No contracts. Just pure speed.</p>
+            <h2 class="section-title">Residential Internet Plans</h2>
+            <p class="section-subtitle">Get the most reliable broadband internet plans for seamless connection. Tailored to fit every home's needs.</p>
+
+            <div class="plans-filter">
+                <button class="filter-btn active">Monthly</button>
+                <button class="filter-btn">3 Months</button>
+                <button class="filter-btn">Annually (Save 20%)</button>
             </div>
 
             <div class="pricing-grid">
                 <!-- Plan 1 -->
-                <div class="glass-card pricing-card">
-                    <div style="font-size: 1.25rem; font-weight: 700; color: var(--text-muted);">Home Starter</div>
-                    <div class="price">Rs. 999 <span>/month</span></div>
-                    <ul class="features-list">
-                        <li><i data-lucide="check-circle-2"></i> 15 Mbps Download</li>
-                        <li><i data-lucide="check-circle-2"></i> Unlimited Data usage</li>
-                        <li><i data-lucide="check-circle-2"></i> Free Installation</li>
-                        <li><i data-lucide="check-circle-2"></i> 24/7 Support</li>
-                    </ul>
-                    <button class="btn btn-secondary" style="width: 100%;">Select Plan</button>
+                <div class="pricing-card animate-up">
+                    <h3 class="plan-name">Home Starter</h3>
+                    <div class="plan-price">
+                        <span class="price-currency">Rs.</span>
+                        <span class="price-amount">1,050</span>
+                        <span class="price-duration">/mo</span>
+                    </div>
+                    <div class="plan-features">
+                        <div class="plan-feature"><i data-lucide="check-circle-2"></i> 200 Mbps Speed</div>
+                        <div class="plan-feature"><i data-lucide="check-circle-2"></i> Single Band Router</div>
+                        <div class="plan-feature"><i data-lucide="check-circle-2"></i> 1 KN-TV Subscription</div>
+                        <div class="plan-feature"><i data-lucide="check-circle-2"></i> Unlimited Data</div>
+                    </div>
+                    <button class="btn btn-outline" style="width: 100%;">Choose Plan</button>
                 </div>
 
                 <!-- Plan 2 -->
-                <div class="glass-card pricing-card featured">
-                    <div class="badge">MOST POPULAR</div>
-                    <div style="font-size: 1.25rem; font-weight: 700; color: var(--primary);">Home Pro</div>
-                    <div class="price">Rs. 1,499 <span>/month</span></div>
-                    <ul class="features-list">
-                        <li><i data-lucide="check-circle-2"></i> 25 Mbps Download</li>
-                        <li><i data-lucide="check-circle-2"></i> Dual-band Router incl.</li>
-                        <li><i data-lucide="check-circle-2"></i> Priority Support</li>
-                        <li><i data-lucide="check-circle-2"></i> No data caps ever</li>
-                    </ul>
-                    <button class="btn btn-primary" style="width: 100%;">Get Started Now</button>
+                <div class="pricing-card featured animate-up delay-1">
+                    <div class="pricing-badge">MOST POPULAR</div>
+                    <h3 class="plan-name">Home Pro</h3>
+                    <div class="plan-price">
+                        <span class="price-currency">Rs.</span>
+                        <span class="price-amount">1,450</span>
+                        <span class="price-duration">/mo</span>
+                    </div>
+                    <div class="plan-features">
+                        <div class="plan-feature"><i data-lucide="check-circle-2"></i> 300 Mbps Speed</div>
+                        <div class="plan-feature"><i data-lucide="check-circle-2"></i> Dual Band Wi-Fi 6 Router</div>
+                        <div class="plan-feature"><i data-lucide="check-circle-2"></i> 2 KN-TV Subscriptions</div>
+                        <div class="plan-feature"><i data-lucide="check-circle-2"></i> Priority Support</div>
+                    </div>
+                    <button class="btn btn-accent" style="width: 100%;">Get Pro Now</button>
                 </div>
 
                 <!-- Plan 3 -->
-                <div class="glass-card pricing-card">
-                    <div style="font-size: 1.25rem; font-weight: 700; color: var(--text-muted);">Ultimate Fiber</div>
-                    <div class="price">Rs. 2,999 <span>/month</span></div>
-                    <ul class="features-list">
-                        <li><i data-lucide="check-circle-2"></i> 100 Mbps Download</li>
-                        <li><i data-lucide="check-circle-2"></i> Enterprise-grade router</li>
-                        <li><i data-lucide="check-circle-2"></i> Dedicated account rep</li>
-                        <li><i data-lucide="check-circle-2"></i> 99.99% SLA uptime</li>
-                    </ul>
-                    <button class="btn btn-secondary" style="width: 100%;">Select Plan</button>
+                <div class="pricing-card animate-up delay-2">
+                    <h3 class="plan-name">Home Max</h3>
+                    <div class="plan-price">
+                        <span class="price-currency">Rs.</span>
+                        <span class="price-amount">2,100</span>
+                        <span class="price-duration">/mo</span>
+                    </div>
+                    <div class="plan-features">
+                        <div class="plan-feature"><i data-lucide="check-circle-2"></i> 500 Mbps Speed</div>
+                        <div class="plan-feature"><i data-lucide="check-circle-2"></i> Mesh Wi-Fi System Included</div>
+                        <div class="plan-feature"><i data-lucide="check-circle-2"></i> 3 KN-TV Subscriptions</div>
+                        <div class="plan-feature"><i data-lucide="check-circle-2"></i> Dedicated Account Rep</div>
+                    </div>
+                    <button class="btn btn-outline" style="width: 100%;">Choose Plan</button>
                 </div>
             </div>
         </div>
     </section>
 
-    <!-- SERVICES -->
-    <section id="services">
+    <!-- PROMO BANNER -->
+    <section class="section-padding">
         <div class="container">
-            <div class="section-header">
-                <h2>Why Choose <strong>Kshireshwar?</strong></h2>
-                <p>We're more than just an ISP. We're your gateway to the digital world.</p>
+            <div class="promo-banner">
+                <div class="promo-bg-shape"></div>
+                <div class="promo-content">
+                    <div style="color: var(--accent); font-weight: 700; margin-bottom: 0.5rem; letter-spacing: 1px; text-transform: uppercase;">Smart Home Ready</div>
+                    <h2>Next-Gen Wi-Fi 6 Beacon</h2>
+                    <p>Experience unrivaled performance and reliability in every corner of your home with our advanced mesh network system.</p>
+                    <button class="btn btn-accent">Learn More <i data-lucide="arrow-right"></i></button>
+                </div>
+                <div class="promo-image">
+                    <!-- Placeholder for router image -->
+                    <div style="width: 300px; height: 300px; background: rgba(255,255,255,0.1); border-radius: 20px; display: flex; align-items: center; justify-content: center; backdrop-filter: blur(10px); border: 1px solid rgba(255,255,255,0.2);">
+                        <i data-lucide="router" style="width: 100px; height: 100px; color: var(--accent);"></i>
+                    </div>
+                </div>
             </div>
+        </div>
+    </section>
 
-            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 3rem;">
-                <div class="animate-fade-in" style="text-align: center;">
-                    <div style="width: 64px; height: 64px; background: #EEF2FF; color: var(--primary); border-radius: 16px; display: flex; align-items: center; justify-content: center; margin: 0 auto 1.5rem;">
-                        <i data-lucide="zap" style="width: 32px; height: 32px;"></i>
+    <!-- BENEFITS AND SERVICES -->
+    <section class="section-padding benefits-section" id="services">
+        <div class="container">
+            <h2 class="section-title">Exclusive Benefits & Services</h2>
+            <p class="section-subtitle">Unlock premium features designed to keep you safe, connected, and rewarded when you choose Kshireshwar Network.</p>
+
+            <div class="benefits-grid">
+                <div class="benefit-item">
+                    <div class="benefit-icon"><i data-lucide="shield-check"></i></div>
+                    <div class="benefit-content">
+                        <h3>SafeNet Protection</h3>
+                        <p>Enterprise-grade security and parental controls built directly into your network. Filter content and protect devices automatically.</p>
                     </div>
-                    <h3>Blazing Speeds</h3>
-                    <p style="color: var(--text-muted); margin-top: 0.5rem;">Experience zero buffering with our state-of-the-art fiber optic technology.</p>
                 </div>
-                <div class="animate-fade-in" style="text-align: center;">
-                    <div style="width: 64px; height: 64px; background: #ECFDF5; color: var(--success); border-radius: 16px; display: flex; align-items: center; justify-content: center; margin: 0 auto 1.5rem;">
-                        <i data-lucide="shield-check" style="width: 32px; height: 32px;"></i>
+                
+                <div class="benefit-item">
+                    <div class="benefit-icon" style="color: var(--warning); background: rgba(245, 158, 11, 0.1);"><i data-lucide="wifi"></i></div>
+                    <div class="benefit-content">
+                        <h3>K-Fi Express</h3>
+                        <p>Access high-speed internet on the go with thousands of K-Fi Express hotspots located across major cities and public areas.</p>
                     </div>
-                    <h3>Rock Solid</h3>
-                    <p style="color: var(--text-muted); margin-top: 0.5rem;">Our redundant network ensures you stay connected when it matters most.</p>
                 </div>
-                <div class="animate-fade-in" style="text-align: center;">
-                    <div style="width: 64px; height: 64px; background: #FEF3F2; color: var(--danger); border-radius: 16px; display: flex; align-items: center; justify-content: center; margin: 0 auto 1.5rem;">
-                        <i data-lucide="headphones" style="width: 32px; height: 32px;"></i>
+
+                <div class="benefit-item">
+                    <div class="benefit-icon" style="color: var(--success); background: rgba(16, 185, 129, 0.1);"><i data-lucide="clock"></i></div>
+                    <div class="benefit-content">
+                        <h3>Time Back Guarantee</h3>
+                        <p>If you experience any downtime, our automated system calculates and credits the exact time back to your account. No questions asked.</p>
                     </div>
-                    <h3>Local Support</h3>
-                    <p style="color: var(--text-muted); margin-top: 0.5rem;">Fast, friendly human support right in your neighborhood.</p>
+                </div>
+
+                <div class="benefit-item">
+                    <div class="benefit-icon" style="color: var(--danger); background: rgba(239, 68, 68, 0.1);"><i data-lucide="heart-handshake"></i></div>
+                    <div class="benefit-content">
+                        <h3>24/7 Local Support</h3>
+                        <p>Our dedicated support team is always ready to assist you. Reach out via app, call, or visit our nearest branch.</p>
+                    </div>
                 </div>
             </div>
         </div>
     </section>
 
     <!-- FOOTER -->
-    <footer style="background: var(--navy-dark); color: white; padding: 100px 0 40px;">
+    <footer class="footer">
         <div class="container">
-            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 4rem; margin-bottom: 60px;">
-                <div>
-                    <div class="logo" style="color: white; margin-bottom: 1.5rem;">
-                        <i data-lucide="glob"></i>
-                        <span>KN <strong>Network</strong></span>
+            <div class="footer-top">
+                <div class="footer-about">
+                    <div class="logo" style="color: white;">
+                        <i data-lucide="globe-2"></i>
+                        Kshireshwar
                     </div>
-                    <p style="color: rgba(255,255,255,0.6); font-size: 0.9rem;">Empowering your digital life with the fastest and most reliable internet in the region. Since 2010.</p>
+                    <p>Empowering communities through reliable, high-speed connectivity. The preferred choice for homes and businesses across the nation.</p>
+                    <div class="social-links">
+                        <a href="#"><i data-lucide="facebook"></i></a>
+                        <a href="#"><i data-lucide="twitter"></i></a>
+                        <a href="#"><i data-lucide="instagram"></i></a>
+                        <a href="#"><i data-lucide="linkedin"></i></a>
+                    </div>
                 </div>
-                <div>
-                    <h4 style="color: white; margin-bottom: 1.5rem;">Quick Links</h4>
-                    <ul style="list-style: none; display: grid; gap: 0.75rem;">
-                        <li><a href="#plans" style="color: rgba(255,255,255,0.6); text-decoration: none;">Internet Plans</a></li>
-                        <li><a href="#services" style="color: rgba(255,255,255,0.6); text-decoration: none;">Our Services</a></li>
-                        <li><a href="#" style="color: rgba(255,255,255,0.6); text-decoration: none;">Coverage Map</a></li>
-                        <li><a href="kshireshwar_dashboard.html" style="color: rgba(255,255,255,0.6); text-decoration: none;">My Account</a></li>
+                
+                <div class="footer-links">
+                    <h4>Company</h4>
+                    <ul>
+                        <li><a href="#">About Us</a></li>
+                        <li><a href="#">Careers</a></li>
+                        <li><a href="#">News & Media</a></li>
+                        <li><a href="#">Contact Us</a></li>
+                        <li><a href="#">Branch Locations</a></li>
                     </ul>
                 </div>
-                <div>
-                    <h4 style="color: white; margin-bottom: 1.5rem;">Support</h4>
-                    <ul style="list-style: none; display: grid; gap: 0.75rem;">
-                        <li><a href="#" style="color: rgba(255,255,255,0.6); text-decoration: none;">Help Center</a></li>
-                        <li><a href="#" style="color: rgba(255,255,255,0.6); text-decoration: none;">Live Chat</a></li>
-                        <li><a href="#" style="color: rgba(255,255,255,0.6); text-decoration: none;">Status Page</a></li>
+
+                <div class="footer-links">
+                    <h4>Services</h4>
+                    <ul>
+                        <li><a href="#">Residential Plans</a></li>
+                        <li><a href="#">SME Solutions</a></li>
+                        <li><a href="#">Enterprise Data</a></li>
+                        <li><a href="#">KN-TV Entertainment</a></li>
+                        <li><a href="#">Cloud Services</a></li>
                     </ul>
                 </div>
-                <div>
-                    <h4 style="color: white; margin-bottom: 1.5rem;">Contact</h4>
-                    <p style="color: rgba(255,255,255,0.6); font-size: 0.9rem; margin-bottom: 1rem;">Kathmandu, Nepal</p>
-                    <p style="color: white; font-weight: 700;">+977-1234567890</p>
-                    <p style="color: rgba(255,255,255,0.6); font-size: 0.9rem;">info@kshireshwar.com.np</p>
+
+                <div class="footer-links">
+                    <h4>Support</h4>
+                    <ul>
+                        <li><a href="#">Help Center</a></li>
+                        <li><a href="#">Check Coverage</a></li>
+                        <li><a href="#">Network Status</a></li>
+                        <li><a href="#">Speed Test</a></li>
+                        <li><a href="kshireshwar_dashboard.html">Customer Portal</a></li>
+                    </ul>
                 </div>
             </div>
-            
-            <div style="padding-top: 40px; border-top: 1px solid rgba(255,255,255,0.1); display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem;">
-                <p style="color: rgba(255,255,255,0.4); font-size: 0.8rem;">&copy; 2024 Kshireshwar Network. All rights reserved.</p>
-                <div style="display: flex; gap: 2rem;">
-                    <a href="#" style="color: rgba(255,255,255,0.4); text-decoration: none; font-size: 0.8rem;">Privacy Policy</a>
-                    <a href="#" style="color: rgba(255,255,255,0.4); text-decoration: none; font-size: 0.8rem;">Terms of Service</a>
+
+            <div class="footer-bottom">
+                <div>&copy; 2026 Kshireshwar Network Ltd. All rights reserved.</div>
+                <div style="display: flex; gap: 1.5rem;">
+                    <a href="#" style="color: inherit;">Privacy Policy</a>
+                    <a href="#" style="color: inherit;">Terms of Service</a>
+                    <a href="#" style="color: inherit;">Fair Usage Policy</a>
                 </div>
             </div>
         </div>
@@ -427,20 +294,26 @@
         // Init Lucide Icons
         lucide.createIcons();
 
-        function toggleMobileMenu() {
-            const menu = document.getElementById('mobile-menu');
-            menu.style.display = menu.style.display === 'none' ? 'block' : 'none';
-        }
-
-        // Smooth scroll
-        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
-            anchor.addEventListener('click', function (e) {
-                e.preventDefault();
-                document.querySelector(this.getAttribute('href')).scrollIntoView({
-                    behavior: 'smooth'
-                });
-            });
+        // Header Scroll Effect
+        window.addEventListener('scroll', () => {
+            const header = document.getElementById('mainHeader');
+            if (window.scrollY > 10) {
+                header.classList.add('scrolled');
+            } else {
+                header.classList.remove('scrolled');
+            }
         });
+
+        // Simple Intersection Observer for Animations
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.style.opacity = '1';
+                }
+            });
+        }, { threshold: 0.1 });
+
+        document.querySelectorAll('.animate-up').forEach(el => observer.observe(el));
     </script>
 </body>
 </html>
