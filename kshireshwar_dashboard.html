@@ -1,0 +1,837 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Kshireshwar Network - Customer Dashboard">
+    <title>My Account | Kshireshwar Network</title>
+    <link rel="stylesheet" href="index.css">
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <style>
+        body { background: var(--bg-main); overflow-x: hidden; }
+
+        /* ── Layout ── */
+        .layout { display: grid; grid-template-columns: 260px 1fr; min-height: 100vh; }
+
+        /* ── Sidebar ── */
+        .sidebar {
+            background: linear-gradient(160deg, var(--navy) 0%, var(--navy-dark) 100%);
+            color: white;
+            display: flex;
+            flex-direction: column;
+            padding: 1.75rem 1.25rem;
+            position: sticky;
+            top: 0;
+            height: 100vh;
+            overflow-y: auto;
+            z-index: 900;
+            transition: transform 0.3s ease;
+        }
+        .sidebar-logo {
+            display: flex; align-items: center; gap: 10px;
+            font-family: 'Outfit', sans-serif; font-size: 1.15rem; font-weight: 800;
+            margin-bottom: 2.5rem; padding: 0 0.5rem;
+        }
+        .sidebar-logo .logo-icon {
+            width: 38px; height: 38px; background: var(--primary);
+            border-radius: 10px; display: flex; align-items: center; justify-content: center;
+            box-shadow: 0 4px 12px rgba(0,82,204,0.4);
+        }
+        .sidebar-logo span { color: rgba(255,255,255,0.5); }
+        .sidebar-logo strong { color: white; }
+
+        .nav-section-label {
+            font-size: 0.65rem; font-weight: 700; letter-spacing: 0.12em;
+            color: rgba(255,255,255,0.3); text-transform: uppercase;
+            padding: 0 0.75rem; margin: 1.25rem 0 0.5rem;
+        }
+        .nav-list { list-style: none; display: flex; flex-direction: column; gap: 2px; }
+        .nav-item a {
+            display: flex; align-items: center; gap: 12px;
+            padding: 0.75rem 0.875rem; border-radius: 10px;
+            color: rgba(255,255,255,0.55); text-decoration: none;
+            font-size: 0.875rem; font-weight: 500; transition: var(--transition);
+        }
+        .nav-item a:hover { color: white; background: rgba(255,255,255,0.08); }
+        .nav-item a.active {
+            color: white; background: var(--primary);
+            box-shadow: 0 4px 15px rgba(0,82,204,0.35);
+        }
+        .nav-item a i { width: 18px; height: 18px; }
+        .nav-badge {
+            margin-left: auto; background: var(--danger);
+            color: white; font-size: 0.65rem; font-weight: 700;
+            padding: 2px 7px; border-radius: 20px;
+        }
+
+        .sidebar-footer { margin-top: auto; padding-top: 1.5rem; border-top: 1px solid rgba(255,255,255,0.08); }
+        .user-chip {
+            display: flex; align-items: center; gap: 12px;
+            padding: 0.75rem; border-radius: 12px; cursor: pointer;
+            transition: var(--transition);
+        }
+        .user-chip:hover { background: rgba(255,255,255,0.08); }
+        .avatar {
+            width: 40px; height: 40px; border-radius: 10px;
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            display: flex; align-items: center; justify-content: center;
+            font-weight: 800; font-size: 0.875rem; color: white; flex-shrink: 0;
+        }
+        .user-chip h5 { color: white; font-size: 0.8125rem; margin-bottom: 2px; }
+        .user-chip p { color: rgba(255,255,255,0.4); font-size: 0.7rem; }
+        .logout-btn {
+            margin-left: auto; color: rgba(255,255,255,0.3);
+            background: none; border: none; cursor: pointer; padding: 4px;
+            transition: var(--transition); border-radius: 6px;
+        }
+        .logout-btn:hover { color: var(--danger); background: rgba(239,68,68,0.1); }
+
+        /* ── Main ── */
+        .main-content { display: flex; flex-direction: column; min-height: 100vh; }
+        .topbar {
+            background: rgba(255,255,255,0.85); backdrop-filter: blur(12px);
+            border-bottom: 1px solid var(--border-color);
+            padding: 1rem 2rem; display: flex; align-items: center;
+            gap: 1rem; position: sticky; top: 0; z-index: 800;
+        }
+        .mobile-toggle {
+            display: none; background: none; border: 1px solid var(--border-color);
+            border-radius: 8px; padding: 0.4rem; cursor: pointer; color: var(--text-heading);
+        }
+        .topbar-title { font-size: 1.1rem; font-weight: 700; color: var(--text-heading); }
+        .topbar-actions { margin-left: auto; display: flex; align-items: center; gap: 0.75rem; }
+        .icon-btn {
+            width: 38px; height: 38px; border-radius: 10px;
+            border: 1px solid var(--border-color); background: white;
+            display: flex; align-items: center; justify-content: center;
+            cursor: pointer; color: var(--text-muted); transition: var(--transition);
+            position: relative;
+        }
+        .icon-btn:hover { border-color: var(--primary); color: var(--primary); }
+        .notif-dot {
+            width: 8px; height: 8px; background: var(--danger); border-radius: 50%;
+            position: absolute; top: 6px; right: 6px; border: 2px solid white;
+        }
+
+        .page { padding: 2rem; flex: 1; }
+        .page-section { display: none; }
+        .page-section.active { display: block; }
+
+        /* ── Welcome Banner ── */
+        .welcome-banner {
+            background: linear-gradient(135deg, var(--navy) 0%, var(--primary) 100%);
+            border-radius: 20px; padding: 2rem 2.5rem;
+            display: flex; align-items: center; justify-content: space-between;
+            margin-bottom: 2rem; overflow: hidden; position: relative;
+        }
+        .welcome-banner::before {
+            content: ''; position: absolute; right: -40px; top: -40px;
+            width: 200px; height: 200px; background: rgba(255,255,255,0.06);
+            border-radius: 50%;
+        }
+        .welcome-banner::after {
+            content: ''; position: absolute; right: 60px; bottom: -60px;
+            width: 150px; height: 150px; background: rgba(255,255,255,0.04);
+            border-radius: 50%;
+        }
+        .welcome-banner h2 { font-size: 1.5rem; color: white; margin-bottom: 0.4rem; }
+        .welcome-banner p { color: rgba(255,255,255,0.65); font-size: 0.875rem; }
+        .plan-chip {
+            background: rgba(255,255,255,0.15); backdrop-filter: blur(6px);
+            border: 1px solid rgba(255,255,255,0.2);
+            border-radius: 12px; padding: 1rem 1.5rem; text-align: center; z-index: 1;
+        }
+        .plan-chip .plan-speed { font-size: 1.75rem; font-weight: 800; color: white; }
+        .plan-chip .plan-label { font-size: 0.75rem; color: rgba(255,255,255,0.6); }
+
+        /* ── Stat Cards ── */
+        .stats-grid {
+            display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 1.25rem; margin-bottom: 2rem;
+        }
+        .stat-card {
+            background: white; border-radius: 16px; padding: 1.5rem;
+            border: 1px solid var(--border-color); box-shadow: var(--shadow-sm);
+            display: flex; align-items: center; gap: 1rem;
+            transition: var(--transition);
+        }
+        .stat-card:hover { transform: translateY(-4px); box-shadow: var(--shadow-lg); }
+        .stat-icon-box {
+            width: 50px; height: 50px; border-radius: 14px; flex-shrink: 0;
+            display: flex; align-items: center; justify-content: center;
+        }
+        .stat-icon-box.blue { background: #EEF2FF; color: var(--primary); }
+        .stat-icon-box.green { background: #ECFDF5; color: var(--success); }
+        .stat-icon-box.amber { background: #FFFBEB; color: var(--warning); }
+        .stat-icon-box.red { background: #FEF2F2; color: var(--danger); }
+        .stat-val { font-size: 1.375rem; font-weight: 800; color: var(--text-heading); }
+        .stat-lbl { font-size: 0.8rem; color: var(--text-muted); margin-top: 2px; }
+        .stat-trend { margin-top: 4px; font-size: 0.75rem; font-weight: 600; }
+        .stat-trend.up { color: var(--success); }
+        .stat-trend.down { color: var(--danger); }
+
+        /* ── Usage Bar ── */
+        .usage-bar-wrap { background: #f1f5f9; border-radius: 12px; height: 10px; overflow: hidden; margin: 0.5rem 0; }
+        .usage-bar-fill {
+            height: 100%; border-radius: 12px;
+            background: linear-gradient(90deg, var(--primary), var(--secondary));
+            transition: width 1s ease;
+        }
+
+        /* ── Grid Halves ── */
+        .grid-halves { display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; margin-bottom: 2rem; }
+        .card {
+            background: white; border-radius: 16px; padding: 1.5rem;
+            border: 1px solid var(--border-color); box-shadow: var(--shadow-sm);
+        }
+        .card-header {
+            display: flex; justify-content: space-between; align-items: center;
+            margin-bottom: 1.25rem;
+        }
+        .card-title { font-size: 1rem; font-weight: 700; color: var(--text-heading); }
+        .card-link { font-size: 0.8125rem; color: var(--primary); text-decoration: none; font-weight: 600; }
+        .card-link:hover { text-decoration: underline; }
+
+        /* ── Speed Gauge ── */
+        .gauge-wrap { display: flex; flex-direction: column; align-items: center; padding: 1rem 0; }
+        .gauge-svg { width: 180px; height: 105px; }
+        .gauge-meta { text-align: center; margin-top: -0.5rem; }
+        .gauge-val { font-size: 2rem; font-weight: 800; color: var(--text-heading); }
+        .gauge-unit { font-size: 0.8rem; color: var(--text-muted); }
+
+        /* ── Mini list ── */
+        .activity-list { list-style: none; display: grid; gap: 0.875rem; }
+        .activity-item {
+            display: flex; align-items: center; gap: 12px;
+            padding-bottom: 0.875rem; border-bottom: 1px solid var(--border-color);
+        }
+        .activity-item:last-child { border-bottom: none; padding-bottom: 0; }
+        .activity-dot { width: 10px; height: 10px; border-radius: 50%; flex-shrink: 0; }
+        .activity-dot.green { background: var(--success); }
+        .activity-dot.blue { background: var(--primary); }
+        .activity-dot.amber { background: var(--warning); }
+        .activity-text { font-size: 0.85rem; color: var(--text-body); flex: 1; }
+        .activity-time { font-size: 0.75rem; color: var(--text-muted); white-space: nowrap; }
+
+        /* ── Table ── */
+        .table-wrap { overflow-x: auto; border-radius: 12px; }
+        table { width: 100%; border-collapse: collapse; }
+        thead th {
+            background: #f8fafc; text-align: left; padding: 0.875rem 1rem;
+            font-size: 0.75rem; font-weight: 700; color: var(--text-muted);
+            text-transform: uppercase; letter-spacing: 0.06em;
+        }
+        tbody td { padding: 1rem; font-size: 0.875rem; border-bottom: 1px solid var(--border-color); }
+        tbody tr:last-child td { border-bottom: none; }
+        tbody tr:hover { background: #fafbfc; }
+
+        .pill {
+            display: inline-block; padding: 0.3rem 0.75rem;
+            border-radius: 20px; font-size: 0.75rem; font-weight: 700;
+        }
+        .pill-green { background: #DCFCE7; color: #15803D; }
+        .pill-amber { background: #FEF9C3; color: #92400E; }
+        .pill-red   { background: #FEE2E2; color: #991B1B; }
+        .pill-blue  { background: #DBEAFE; color: #1E40AF; }
+
+        /* ── Quick Actions ── */
+        .quick-actions { display: grid; grid-template-columns: repeat(auto-fit, minmax(120px, 1fr)); gap: 1rem; margin-bottom: 2rem; }
+        .qa-btn {
+            background: white; border: 1px solid var(--border-color); border-radius: 14px;
+            padding: 1.25rem 1rem; text-align: center; cursor: pointer;
+            transition: var(--transition); text-decoration: none; color: var(--text-body);
+        }
+        .qa-btn:hover { border-color: var(--primary); color: var(--primary); transform: translateY(-3px); box-shadow: var(--shadow-md); }
+        .qa-icon { font-size: 1.5rem; margin-bottom: 0.5rem; }
+        .qa-label { font-size: 0.8rem; font-weight: 600; }
+
+        /* ── Modals ── */
+        .modal-overlay {
+            display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.45);
+            backdrop-filter: blur(4px); z-index: 2000;
+            align-items: center; justify-content: center;
+        }
+        .modal-overlay.open { display: flex; }
+        .modal-box {
+            background: white; border-radius: 20px; padding: 2rem;
+            width: 100%; max-width: 480px; margin: 1rem;
+            box-shadow: var(--shadow-xl); animation: fadeIn 0.25s ease;
+        }
+        .modal-head {
+            display: flex; justify-content: space-between; align-items: center;
+            margin-bottom: 1.5rem;
+        }
+        .modal-head h3 { font-size: 1.15rem; color: var(--text-heading); }
+        .modal-close { background: none; border: none; cursor: pointer; color: var(--text-muted); padding: 4px; border-radius: 6px; }
+        .modal-close:hover { background: var(--bg-main); color: var(--text-heading); }
+        .form-label { font-size: 0.8125rem; font-weight: 600; color: var(--text-heading); display: block; margin-bottom: 0.4rem; }
+        .form-control {
+            width: 100%; padding: 0.75rem 1rem; border: 1px solid var(--border-color);
+            border-radius: 10px; font-size: 0.875rem; font-family: inherit;
+            transition: var(--transition); outline: none; background: #fafbfc;
+        }
+        .form-control:focus { border-color: var(--primary); background: white; box-shadow: 0 0 0 3px rgba(0,82,204,0.1); }
+        .form-group { margin-bottom: 1.25rem; }
+        .modal-foot { display: flex; gap: 0.75rem; justify-content: flex-end; margin-top: 0.5rem; }
+
+        /* ── Sidebar Overlay (mobile) ── */
+        .sidebar-overlay {
+            display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.5);
+            z-index: 890; backdrop-filter: blur(2px);
+        }
+
+        /* ── Responsive ── */
+        @media (max-width: 1024px) {
+            .layout { grid-template-columns: 1fr; }
+            .sidebar { position: fixed; left: -270px; width: 260px; }
+            .sidebar.open { left: 0; box-shadow: var(--shadow-xl); }
+            .sidebar-overlay { display: none; }
+            .sidebar-overlay.visible { display: block; }
+            .mobile-toggle { display: flex; align-items: center; justify-content: center; }
+            .grid-halves { grid-template-columns: 1fr; }
+        }
+        @media (max-width: 640px) {
+            .page { padding: 1.25rem; }
+            .topbar { padding: 0.875rem 1.25rem; }
+            .welcome-banner { flex-direction: column; align-items: flex-start; gap: 1.25rem; }
+            .plan-chip { width: 100%; }
+            .quick-actions { grid-template-columns: repeat(2, 1fr); }
+        }
+    </style>
+</head>
+<body>
+
+<!-- Sidebar Overlay (mobile) -->
+<div class="sidebar-overlay" id="sidebarOverlay" onclick="closeSidebar()"></div>
+
+<div class="layout">
+
+    <!-- ══ SIDEBAR ══ -->
+    <aside class="sidebar" id="sidebar">
+        <div class="sidebar-logo">
+            <div class="logo-icon"><i data-lucide="globe" style="width:20px;height:20px;color:white"></i></div>
+            <div><span>Kshireshwar</span> <strong>Network</strong></div>
+        </div>
+
+        <p class="nav-section-label">Main Menu</p>
+        <ul class="nav-list">
+            <li class="nav-item">
+                <a href="#" class="active" onclick="navigate('dashboard', this)">
+                    <i data-lucide="layout-dashboard"></i> Dashboard
+                </a>
+            </li>
+            <li class="nav-item">
+                <a href="#" onclick="navigate('usage', this)">
+                    <i data-lucide="activity"></i> Usage &amp; Speed
+                </a>
+            </li>
+            <li class="nav-item">
+                <a href="#" onclick="navigate('billing', this)">
+                    <i data-lucide="receipt"></i> Billing
+                </a>
+            </li>
+            <li class="nav-item">
+                <a href="#" onclick="navigate('tickets', this)">
+                    <i data-lucide="headphones"></i> Support
+                    <span class="nav-badge">2</span>
+                </a>
+            </li>
+        </ul>
+
+        <p class="nav-section-label">Account</p>
+        <ul class="nav-list">
+            <li class="nav-item">
+                <a href="#" onclick="navigate('settings', this)">
+                    <i data-lucide="settings"></i> Settings
+                </a>
+            </li>
+            <li class="nav-item">
+                <a href="kshireshwar_network_website.html">
+                    <i data-lucide="arrow-left"></i> Back to Website
+                </a>
+            </li>
+        </ul>
+
+        <div class="sidebar-footer">
+            <div class="user-chip">
+                <div class="avatar">RK</div>
+                <div>
+                    <h5>Rajesh Kumar</h5>
+                    <p>Home Pro Plan</p>
+                </div>
+                <button class="logout-btn" onclick="logout()" title="Logout">
+                    <i data-lucide="log-out" style="width:16px;height:16px"></i>
+                </button>
+            </div>
+        </div>
+    </aside>
+
+    <!-- ══ MAIN CONTENT ══ -->
+    <div class="main-content">
+
+        <!-- Top Bar -->
+        <header class="topbar">
+            <button class="mobile-toggle" onclick="toggleSidebar()" id="menuBtn">
+                <i data-lucide="menu" style="width:20px;height:20px"></i>
+            </button>
+            <span class="topbar-title" id="pageTitle">Dashboard</span>
+            <div class="topbar-actions">
+                <div class="icon-btn" title="Notifications">
+                    <i data-lucide="bell" style="width:18px;height:18px"></i>
+                    <span class="notif-dot"></span>
+                </div>
+                <div class="icon-btn" title="Help">
+                    <i data-lucide="help-circle" style="width:18px;height:18px"></i>
+                </div>
+                <button class="btn btn-primary" style="padding:0.55rem 1.1rem;font-size:0.8125rem" onclick="openModal('upgrade')">
+                    <i data-lucide="zap" style="width:14px;height:14px"></i> Upgrade
+                </button>
+            </div>
+        </header>
+
+        <!-- ══ DASHBOARD PAGE ══ -->
+        <div class="page page-section active" id="page-dashboard">
+
+            <!-- Welcome Banner -->
+            <div class="welcome-banner animate-fade-in">
+                <div>
+                    <h2>Good afternoon, Rajesh 👋</h2>
+                    <p>Your connection is active. Everything looks great today.</p>
+                    <div style="display:flex;gap:0.75rem;margin-top:1.25rem;flex-wrap:wrap">
+                        <button class="btn btn-primary" style="font-size:0.8125rem;padding:0.55rem 1.1rem" onclick="openModal('ticket')">
+                            <i data-lucide="plus" style="width:14px;height:14px"></i> New Ticket
+                        </button>
+                        <button class="btn btn-secondary" style="font-size:0.8125rem;padding:0.55rem 1.1rem" onclick="navigate('billing', null)">
+                            <i data-lucide="file-text" style="width:14px;height:14px"></i> Pay Bill
+                        </button>
+                    </div>
+                </div>
+                <div class="plan-chip">
+                    <div class="plan-speed">25 <small style="font-size:1rem">Mbps</small></div>
+                    <div class="plan-label">Home Pro · Active</div>
+                    <div style="margin-top:6px;font-size:0.7rem;color:rgba(255,255,255,0.5)">Renews May 15, 2026</div>
+                </div>
+            </div>
+
+            <!-- Stat Cards -->
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <div class="stat-icon-box blue"><i data-lucide="zap" style="width:22px;height:22px"></i></div>
+                    <div>
+                        <div class="stat-val">23.4 <small style="font-size:0.9rem">Mbps</small></div>
+                        <div class="stat-lbl">Current Speed</div>
+                        <div class="stat-trend up">↑ 93% of plan speed</div>
+                    </div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon-box green"><i data-lucide="hard-drive" style="width:22px;height:22px"></i></div>
+                    <div>
+                        <div class="stat-val">142 <small style="font-size:0.9rem">GB</small></div>
+                        <div class="stat-lbl">Data Used this Month</div>
+                        <div class="stat-trend up">Unlimited Plan</div>
+                    </div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon-box amber"><i data-lucide="clock" style="width:22px;height:22px"></i></div>
+                    <div>
+                        <div class="stat-val">Rs. 1,499</div>
+                        <div class="stat-lbl">Next Bill Amount</div>
+                        <div class="stat-trend down">Due in 25 days</div>
+                    </div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon-box red"><i data-lucide="wifi" style="width:22px;height:22px"></i></div>
+                    <div>
+                        <div class="stat-val">99.8%</div>
+                        <div class="stat-lbl">Uptime (30 days)</div>
+                        <div class="stat-trend up">↑ Excellent</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Quick Actions -->
+            <div class="quick-actions">
+                <a class="qa-btn" onclick="navigate('billing', null)">
+                    <div class="qa-icon">💳</div>
+                    <div class="qa-label">Pay Bill</div>
+                </a>
+                <a class="qa-btn" onclick="navigate('usage', null)">
+                    <div class="qa-icon">📊</div>
+                    <div class="qa-label">View Usage</div>
+                </a>
+                <a class="qa-btn" onclick="openModal('ticket')">
+                    <div class="qa-icon">🎧</div>
+                    <div class="qa-label">Get Support</div>
+                </a>
+                <a class="qa-btn" onclick="openModal('upgrade')">
+                    <div class="qa-icon">⚡</div>
+                    <div class="qa-label">Upgrade Plan</div>
+                </a>
+            </div>
+
+            <!-- Bottom Grid -->
+            <div class="grid-halves">
+                <!-- Speed Gauge -->
+                <div class="card">
+                    <div class="card-header">
+                        <span class="card-title">Live Speed Test</span>
+                        <button class="btn btn-secondary" style="font-size:0.75rem;padding:0.4rem 0.85rem" onclick="runSpeedTest()">Run Test</button>
+                    </div>
+                    <div class="gauge-wrap">
+                        <svg class="gauge-svg" viewBox="0 0 180 105">
+                            <path d="M 15 100 A 75 75 0 0 1 165 100" fill="none" stroke="#e2e8f0" stroke-width="14" stroke-linecap="round"/>
+                            <path id="gaugePath" d="M 15 100 A 75 75 0 0 1 165 100" fill="none" stroke="url(#gGrad)" stroke-width="14" stroke-linecap="round" stroke-dasharray="235" stroke-dashoffset="55"/>
+                            <defs>
+                                <linearGradient id="gGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+                                    <stop offset="0%" stop-color="#0052CC"/>
+                                    <stop offset="100%" stop-color="#1E9FB8"/>
+                                </linearGradient>
+                            </defs>
+                        </svg>
+                        <div class="gauge-meta">
+                            <div class="gauge-val" id="speedVal">23.4</div>
+                            <div class="gauge-unit">Mbps Download</div>
+                        </div>
+                    </div>
+                    <div style="display:grid;grid-template-columns:1fr 1fr;gap:1rem;margin-top:1rem">
+                        <div style="text-align:center;background:#f8fafc;border-radius:10px;padding:0.75rem">
+                            <div style="font-size:1.1rem;font-weight:800;color:var(--text-heading)">11.2<small style="font-size:0.75rem"> Mbps</small></div>
+                            <div style="font-size:0.75rem;color:var(--text-muted)">Upload</div>
+                        </div>
+                        <div style="text-align:center;background:#f8fafc;border-radius:10px;padding:0.75rem">
+                            <div style="font-size:1.1rem;font-weight:800;color:var(--text-heading)">4<small style="font-size:0.75rem"> ms</small></div>
+                            <div style="font-size:0.75rem;color:var(--text-muted)">Ping</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Recent Activity -->
+                <div class="card">
+                    <div class="card-header">
+                        <span class="card-title">Recent Activity</span>
+                        <a class="card-link" onclick="navigate('billing', null)">See all</a>
+                    </div>
+                    <ul class="activity-list">
+                        <li class="activity-item">
+                            <span class="activity-dot green"></span>
+                            <span class="activity-text">Payment successful — Rs. 1,499</span>
+                            <span class="activity-time">Apr 15</span>
+                        </li>
+                        <li class="activity-item">
+                            <span class="activity-dot blue"></span>
+                            <span class="activity-text">Speed upgraded to 25 Mbps</span>
+                            <span class="activity-time">Apr 10</span>
+                        </li>
+                        <li class="activity-item">
+                            <span class="activity-dot amber"></span>
+                            <span class="activity-text">Ticket #1042 resolved</span>
+                            <span class="activity-time">Apr 3</span>
+                        </li>
+                        <li class="activity-item">
+                            <span class="activity-dot green"></span>
+                            <span class="activity-text">Payment successful — Rs. 1,499</span>
+                            <span class="activity-time">Mar 15</span>
+                        </li>
+                        <li class="activity-item">
+                            <span class="activity-dot blue"></span>
+                            <span class="activity-text">Maintenance window completed</span>
+                            <span class="activity-time">Mar 8</span>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <!-- ══ USAGE PAGE ══ -->
+        <div class="page page-section" id="page-usage">
+            <h2 style="margin-bottom:1.5rem;font-size:1.3rem">Usage &amp; Speed</h2>
+            <div class="stats-grid" style="margin-bottom:2rem">
+                <div class="stat-card">
+                    <div class="stat-icon-box blue"><i data-lucide="download" style="width:22px;height:22px"></i></div>
+                    <div><div class="stat-val">142 GB</div><div class="stat-lbl">Downloaded</div></div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon-box green"><i data-lucide="upload" style="width:22px;height:22px"></i></div>
+                    <div><div class="stat-val">38 GB</div><div class="stat-lbl">Uploaded</div></div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon-box amber"><i data-lucide="calendar" style="width:22px;height:22px"></i></div>
+                    <div><div class="stat-val">20 Days</div><div class="stat-lbl">Remaining in Cycle</div></div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon-box red"><i data-lucide="server" style="width:22px;height:22px"></i></div>
+                    <div><div class="stat-val">Unlimited</div><div class="stat-lbl">Data Cap</div></div>
+                </div>
+            </div>
+            <div class="card" style="margin-bottom:2rem">
+                <div class="card-header"><span class="card-title">Daily Usage (Last 7 Days)</span></div>
+                <div style="display:flex;flex-direction:column;gap:0.875rem">
+                    <div>
+                        <div style="display:flex;justify-content:space-between;font-size:0.8rem;margin-bottom:4px">
+                            <span style="color:var(--text-muted)">Monday</span><span style="font-weight:600">24 GB</span>
+                        </div>
+                        <div class="usage-bar-wrap"><div class="usage-bar-fill" style="width:72%"></div></div>
+                    </div>
+                    <div>
+                        <div style="display:flex;justify-content:space-between;font-size:0.8rem;margin-bottom:4px">
+                            <span style="color:var(--text-muted)">Tuesday</span><span style="font-weight:600">18 GB</span>
+                        </div>
+                        <div class="usage-bar-wrap"><div class="usage-bar-fill" style="width:54%"></div></div>
+                    </div>
+                    <div>
+                        <div style="display:flex;justify-content:space-between;font-size:0.8rem;margin-bottom:4px">
+                            <span style="color:var(--text-muted)">Wednesday</span><span style="font-weight:600">31 GB</span>
+                        </div>
+                        <div class="usage-bar-wrap"><div class="usage-bar-fill" style="width:93%"></div></div>
+                    </div>
+                    <div>
+                        <div style="display:flex;justify-content:space-between;font-size:0.8rem;margin-bottom:4px">
+                            <span style="color:var(--text-muted)">Thursday</span><span style="font-weight:600">12 GB</span>
+                        </div>
+                        <div class="usage-bar-wrap"><div class="usage-bar-fill" style="width:36%"></div></div>
+                    </div>
+                    <div>
+                        <div style="display:flex;justify-content:space-between;font-size:0.8rem;margin-bottom:4px">
+                            <span style="color:var(--text-muted)">Friday</span><span style="font-weight:600">27 GB</span>
+                        </div>
+                        <div class="usage-bar-wrap"><div class="usage-bar-fill" style="width:81%"></div></div>
+                    </div>
+                    <div>
+                        <div style="display:flex;justify-content:space-between;font-size:0.8rem;margin-bottom:4px">
+                            <span style="color:var(--text-muted)">Saturday</span><span style="font-weight:600">19 GB</span>
+                        </div>
+                        <div class="usage-bar-wrap"><div class="usage-bar-fill" style="width:57%"></div></div>
+                    </div>
+                    <div>
+                        <div style="display:flex;justify-content:space-between;font-size:0.8rem;margin-bottom:4px">
+                            <span style="color:var(--text-muted)">Sunday</span><span style="font-weight:600">11 GB</span>
+                        </div>
+                        <div class="usage-bar-wrap"><div class="usage-bar-fill" style="width:33%"></div></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ══ BILLING PAGE ══ -->
+        <div class="page page-section" id="page-billing">
+            <h2 style="margin-bottom:1.5rem;font-size:1.3rem">Billing &amp; Payments</h2>
+            <div class="grid-halves" style="margin-bottom:2rem">
+                <div class="card" style="background:linear-gradient(135deg,var(--navy),var(--primary));color:white">
+                    <p style="font-size:0.8rem;color:rgba(255,255,255,0.6);margin-bottom:0.5rem">Current Balance Due</p>
+                    <p style="font-size:2.5rem;font-weight:800;color:white;margin-bottom:0.25rem">Rs. 1,499</p>
+                    <p style="font-size:0.8rem;color:rgba(255,255,255,0.6);margin-bottom:1.5rem">Due on May 15, 2026</p>
+                    <button class="btn" style="background:white;color:var(--primary);font-weight:700;font-size:0.875rem">Pay Now</button>
+                </div>
+                <div class="card">
+                    <div class="card-title" style="margin-bottom:1rem">Payment Method</div>
+                    <div style="display:flex;align-items:center;gap:12px;background:#f8fafc;border-radius:12px;padding:0.875rem">
+                        <div style="width:40px;height:28px;background:var(--primary);border-radius:6px;display:flex;align-items:center;justify-content:center">
+                            <i data-lucide="credit-card" style="width:18px;height:18px;color:white"></i>
+                        </div>
+                        <div>
+                            <div style="font-size:0.875rem;font-weight:600">eSewa Wallet</div>
+                            <div style="font-size:0.75rem;color:var(--text-muted)">Auto-pay enabled</div>
+                        </div>
+                        <span class="pill pill-green" style="margin-left:auto">Active</span>
+                    </div>
+                    <button class="btn btn-secondary" style="width:100%;margin-top:1rem;font-size:0.8125rem">Manage Payment</button>
+                </div>
+            </div>
+            <div class="card">
+                <div class="card-header"><span class="card-title">Payment History</span></div>
+                <div class="table-wrap">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Invoice</th><th>Date</th><th>Plan</th><th>Amount</th><th>Status</th><th>Action</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr><td>#INV-0042</td><td>Apr 15, 2026</td><td>Home Pro</td><td>Rs. 1,499</td><td><span class="pill pill-green">Paid</span></td><td><a href="#" style="color:var(--primary);font-size:0.8rem">Download</a></td></tr>
+                            <tr><td>#INV-0041</td><td>Mar 15, 2026</td><td>Home Pro</td><td>Rs. 1,499</td><td><span class="pill pill-green">Paid</span></td><td><a href="#" style="color:var(--primary);font-size:0.8rem">Download</a></td></tr>
+                            <tr><td>#INV-0040</td><td>Feb 15, 2026</td><td>Home Pro</td><td>Rs. 1,499</td><td><span class="pill pill-green">Paid</span></td><td><a href="#" style="color:var(--primary);font-size:0.8rem">Download</a></td></tr>
+                            <tr><td>#INV-0039</td><td>Jan 15, 2026</td><td>Home Starter</td><td>Rs. 999</td><td><span class="pill pill-green">Paid</span></td><td><a href="#" style="color:var(--primary);font-size:0.8rem">Download</a></td></tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <!-- ══ TICKETS PAGE ══ -->
+        <div class="page page-section" id="page-tickets">
+            <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:1.5rem">
+                <h2 style="font-size:1.3rem">Support Tickets</h2>
+                <button class="btn btn-primary" style="font-size:0.8125rem" onclick="openModal('ticket')">
+                    <i data-lucide="plus" style="width:14px;height:14px"></i> New Ticket
+                </button>
+            </div>
+            <div class="card">
+                <div class="table-wrap">
+                    <table>
+                        <thead>
+                            <tr><th>Ticket ID</th><th>Subject</th><th>Category</th><th>Date</th><th>Status</th></tr>
+                        </thead>
+                        <tbody>
+                            <tr><td>#TK-1044</td><td>Slow speed in evening hours</td><td>Technical</td><td>Apr 18, 2026</td><td><span class="pill pill-amber">In Progress</span></td></tr>
+                            <tr><td>#TK-1043</td><td>Request for static IP address</td><td>Account</td><td>Apr 14, 2026</td><td><span class="pill pill-blue">Open</span></td></tr>
+                            <tr><td>#TK-1042</td><td>Connection dropped frequently</td><td>Technical</td><td>Apr 2, 2026</td><td><span class="pill pill-green">Resolved</span></td></tr>
+                            <tr><td>#TK-1039</td><td>Billing discrepancy for March</td><td>Billing</td><td>Mar 18, 2026</td><td><span class="pill pill-green">Resolved</span></td></tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <!-- ══ SETTINGS PAGE ══ -->
+        <div class="page page-section" id="page-settings">
+            <h2 style="margin-bottom:1.5rem;font-size:1.3rem">Account Settings</h2>
+            <div class="grid-halves">
+                <div class="card">
+                    <div class="card-title" style="margin-bottom:1.25rem">Personal Information</div>
+                    <div class="form-group"><label class="form-label">Full Name</label><input class="form-control" type="text" value="Rajesh Kumar"></div>
+                    <div class="form-group"><label class="form-label">Email Address</label><input class="form-control" type="email" value="rajesh@example.com"></div>
+                    <div class="form-group"><label class="form-label">Phone Number</label><input class="form-control" type="tel" value="+977 98XXXXXXXX"></div>
+                    <button class="btn btn-primary" style="font-size:0.875rem">Save Changes</button>
+                </div>
+                <div class="card">
+                    <div class="card-title" style="margin-bottom:1.25rem">Security</div>
+                    <div class="form-group"><label class="form-label">Current Password</label><input class="form-control" type="password" placeholder="••••••••"></div>
+                    <div class="form-group"><label class="form-label">New Password</label><input class="form-control" type="password" placeholder="••••••••"></div>
+                    <div class="form-group"><label class="form-label">Confirm New Password</label><input class="form-control" type="password" placeholder="••••••••"></div>
+                    <button class="btn btn-primary" style="font-size:0.875rem">Update Password</button>
+                </div>
+            </div>
+        </div>
+
+    </div><!-- /main-content -->
+</div><!-- /layout -->
+
+<!-- ══ MODAL: New Ticket ══ -->
+<div class="modal-overlay" id="modal-ticket">
+    <div class="modal-box">
+        <div class="modal-head">
+            <h3>Create Support Ticket</h3>
+            <button class="modal-close" onclick="closeModal('ticket')"><i data-lucide="x" style="width:18px;height:18px"></i></button>
+        </div>
+        <div class="form-group">
+            <label class="form-label">Category</label>
+            <select class="form-control">
+                <option>Technical Issue</option>
+                <option>Billing Question</option>
+                <option>Plan Change</option>
+                <option>Other</option>
+            </select>
+        </div>
+        <div class="form-group">
+            <label class="form-label">Subject</label>
+            <input type="text" class="form-control" placeholder="Brief description of your issue">
+        </div>
+        <div class="form-group">
+            <label class="form-label">Description</label>
+            <textarea class="form-control" style="resize:vertical;min-height:110px" placeholder="Please provide details..."></textarea>
+        </div>
+        <div class="modal-foot">
+            <button class="btn btn-secondary" onclick="closeModal('ticket')">Cancel</button>
+            <button class="btn btn-primary">Submit Ticket</button>
+        </div>
+    </div>
+</div>
+
+<!-- ══ MODAL: Upgrade ══ -->
+<div class="modal-overlay" id="modal-upgrade">
+    <div class="modal-box" style="max-width:540px">
+        <div class="modal-head">
+            <h3>Upgrade Your Plan</h3>
+            <button class="modal-close" onclick="closeModal('upgrade')"><i data-lucide="x" style="width:18px;height:18px"></i></button>
+        </div>
+        <div style="display:grid;gap:0.875rem">
+            <div style="border:2px solid var(--border-color);border-radius:14px;padding:1.25rem;display:flex;align-items:center;gap:1rem;cursor:pointer;transition:var(--transition)" onmouseover="this.style.borderColor='var(--primary)'" onmouseout="this.style.borderColor='var(--border-color)'">
+                <div style="flex:1"><strong>Home Pro</strong><br><small style="color:var(--text-muted)">25 Mbps — Rs. 1,499/mo</small></div>
+                <span class="pill pill-green">Current</span>
+            </div>
+            <div style="border:2px solid var(--primary);border-radius:14px;padding:1.25rem;display:flex;align-items:center;gap:1rem;cursor:pointer;background:#EEF2FF">
+                <div style="flex:1"><strong>Ultimate Fiber</strong><br><small style="color:var(--text-muted)">100 Mbps — Rs. 2,999/mo</small></div>
+                <span class="pill pill-blue">Recommended</span>
+            </div>
+        </div>
+        <div class="modal-foot" style="margin-top:1.5rem">
+            <button class="btn btn-secondary" onclick="closeModal('upgrade')">Cancel</button>
+            <button class="btn btn-primary">Confirm Upgrade</button>
+        </div>
+    </div>
+</div>
+
+<script>
+    lucide.createIcons();
+
+    const pageTitles = {
+        dashboard: 'Dashboard',
+        usage: 'Usage & Speed',
+        billing: 'Billing & Payments',
+        tickets: 'Support Tickets',
+        settings: 'Account Settings'
+    };
+
+    function navigate(section, linkEl) {
+        // Hide all pages
+        document.querySelectorAll('.page-section').forEach(p => p.classList.remove('active'));
+        document.getElementById('page-' + section).classList.add('active');
+
+        // Update topbar title
+        document.getElementById('pageTitle').textContent = pageTitles[section];
+
+        // Update nav active state
+        document.querySelectorAll('.nav-item a').forEach(a => a.classList.remove('active'));
+        if (linkEl) linkEl.classList.add('active');
+
+        closeSidebar();
+    }
+
+    function toggleSidebar() {
+        const sidebar = document.getElementById('sidebar');
+        const overlay = document.getElementById('sidebarOverlay');
+        sidebar.classList.toggle('open');
+        overlay.classList.toggle('visible');
+    }
+
+    function closeSidebar() {
+        document.getElementById('sidebar').classList.remove('open');
+        document.getElementById('sidebarOverlay').classList.remove('visible');
+    }
+
+    function openModal(type) {
+        document.getElementById('modal-' + type).classList.add('open');
+    }
+
+    function closeModal(type) {
+        document.getElementById('modal-' + type).classList.remove('open');
+    }
+
+    // Close modals on overlay click
+    document.querySelectorAll('.modal-overlay').forEach(m => {
+        m.addEventListener('click', function(e) {
+            if (e.target === this) this.classList.remove('open');
+        });
+    });
+
+    function logout() {
+        if (confirm('Are you sure you want to logout?')) {
+            window.location.href = 'kshireshwar_network_website.html';
+        }
+    }
+
+    function runSpeedTest() {
+        const val = document.getElementById('speedVal');
+        const path = document.getElementById('gaugePath');
+        let i = 0;
+        const interval = setInterval(() => {
+            const speed = (Math.random() * 24 + 1).toFixed(1);
+            val.textContent = speed;
+            const pct = speed / 25;
+            path.setAttribute('stroke-dashoffset', (235 - pct * 180).toFixed(1));
+            if (++i > 12) clearInterval(interval);
+        }, 150);
+    }
+</script>
+</body>
+</html>

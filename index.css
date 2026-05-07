@@ -1,0 +1,135 @@
+/* 
+  Kshireshwar Network - Design System 
+  A premium, modern design system for ISP services.
+*/
+
+@import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=Outfit:wght@300;400;500;600;700;800&display=swap');
+
+:root {
+    --primary: #0052CC;
+    --primary-light: #4c8bf5;
+    --primary-dark: #003d99;
+    --secondary: #1E9FB8;
+    --accent: #00B8E6;
+    --navy: #001F4D;
+    --navy-dark: #001533;
+    --navy-light: #0b2e63;
+    --success: #10B981;
+    --warning: #F59E0B;
+    --danger: #EF4444;
+    --info: #3B82F6;
+    --bg-main: #F4F7FA;
+    --bg-card: rgba(255, 255, 255, 0.85);
+    --bg-glass: rgba(255, 255, 255, 0.1);
+    --text-heading: #0F172A;
+    --text-body: #475569;
+    --text-muted: #94A3B8;
+    --text-white: #FFFFFF;
+    --border-color: rgba(226, 232, 240, 0.8);
+    --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+    --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+    --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+    --shadow-xl: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+    --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    --radius: 16px;
+}
+
+* { margin: 0; padding: 0; box-sizing: border-box; -webkit-font-smoothing: antialiased; }
+html { scroll-behavior: smooth; font-size: 16px; }
+body {
+    font-family: 'Plus Jakarta Sans', sans-serif;
+    background-color: var(--bg-main);
+    color: var(--text-body);
+    line-height: 1.6;
+    overflow-x: hidden;
+}
+h1, h2, h3, h4, h5, h6 { font-family: 'Outfit', sans-serif; color: var(--text-heading); font-weight: 700; }
+a { text-decoration: none; color: inherit; }
+ul { list-style: none; }
+img { max-width: 100%; display: block; }
+
+/* ── Utility ── */
+.container { max-width: 1280px; margin: 0 auto; padding: 0 1.5rem; }
+
+.glass-panel {
+    background: var(--bg-card); backdrop-filter: blur(12px);
+    border: 1px solid var(--border-color); box-shadow: var(--shadow-lg);
+}
+.glass-card {
+    background: rgba(255,255,255,0.7); backdrop-filter: blur(10px);
+    border: 1px solid rgba(255,255,255,0.3); border-radius: var(--radius);
+    box-shadow: var(--shadow-md); transition: var(--transition);
+}
+.glass-card:hover { transform: translateY(-5px); box-shadow: var(--shadow-xl); background: rgba(255,255,255,0.9); }
+
+/* ── Buttons ── */
+.btn {
+    padding: 0.75rem 1.5rem; border-radius: 10px; font-weight: 600;
+    font-size: 0.9375rem; cursor: pointer; transition: var(--transition);
+    border: none; display: inline-flex; align-items: center;
+    justify-content: center; gap: 0.5rem; text-decoration: none;
+    font-family: inherit;
+}
+.btn-primary {
+    background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
+    color: white; box-shadow: 0 4px 15px rgba(0, 82, 204, 0.3);
+}
+.btn-primary:hover { transform: translateY(-2px); box-shadow: 0 8px 20px rgba(0, 82, 204, 0.4); }
+.btn-secondary { background: white; color: var(--primary); border: 1px solid var(--border-color); }
+.btn-secondary:hover { background: var(--bg-main); }
+.btn-outline-white { background: transparent; color: white; border: 2px solid rgba(255,255,255,0.4); }
+.btn-outline-white:hover { background: rgba(255,255,255,0.1); border-color: white; }
+.btn-lg { padding: 1rem 2.5rem; font-size: 1.1rem; border-radius: 12px; }
+.btn-sm { padding: 0.5rem 1rem; font-size: 0.8125rem; }
+
+/* ── Animations ── */
+@keyframes fadeIn { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+@keyframes fadeInLeft { from { opacity: 0; transform: translateX(-30px); } to { opacity: 1; transform: translateX(0); } }
+@keyframes fadeInRight { from { opacity: 0; transform: translateX(30px); } to { opacity: 1; transform: translateX(0); } }
+@keyframes pulse { 0%,100% { opacity: 1; } 50% { opacity: 0.5; } }
+@keyframes float { 0%,100% { transform: translateY(0); } 50% { transform: translateY(-10px); } }
+@keyframes slideUp { from { opacity: 0; transform: translateY(40px); } to { opacity: 1; transform: translateY(0); } }
+@keyframes countUp { from { opacity: 0; transform: scale(0.5); } to { opacity: 1; transform: scale(1); } }
+
+.animate-fade-in { animation: fadeIn 0.6s ease-out forwards; }
+.animate-slide-up { animation: slideUp 0.7s ease-out forwards; }
+.animate-float { animation: float 3s ease-in-out infinite; }
+
+/* Scroll reveal */
+.reveal { opacity: 0; transform: translateY(30px); transition: all 0.8s ease; }
+.reveal.visible { opacity: 1; transform: translateY(0); }
+
+/* ── Scrollbar ── */
+::-webkit-scrollbar { width: 8px; }
+::-webkit-scrollbar-track { background: var(--bg-main); }
+::-webkit-scrollbar-thumb { background: #CBD5E1; border-radius: 10px; }
+::-webkit-scrollbar-thumb:hover { background: #94A3B8; }
+
+/* ── Section ── */
+.section { padding: 100px 0; }
+.section-header { text-align: center; margin-bottom: 60px; }
+.section-header h2 { font-size: 2.5rem; margin-bottom: 1rem; }
+.section-header p { color: var(--text-muted); font-size: 1.125rem; max-width: 600px; margin: 0 auto; }
+.section-label {
+    display: inline-block; background: #EEF2FF; color: var(--primary);
+    padding: 0.4rem 1rem; border-radius: 20px; font-size: 0.8rem;
+    font-weight: 700; margin-bottom: 1rem; letter-spacing: 0.05em;
+}
+
+/* ── Pill / Badge ── */
+.pill { display: inline-block; padding: 0.3rem 0.75rem; border-radius: 20px; font-size: 0.75rem; font-weight: 700; }
+.pill-green { background: #DCFCE7; color: #15803D; }
+.pill-amber { background: #FEF9C3; color: #92400E; }
+.pill-red { background: #FEE2E2; color: #991B1B; }
+.pill-blue { background: #DBEAFE; color: #1E40AF; }
+
+/* ── Responsive base ── */
+@media (max-width: 1024px) {
+    .section { padding: 60px 0; }
+    .section-header h2 { font-size: 2rem; }
+}
+@media (max-width: 640px) {
+    .section { padding: 40px 0; }
+    .section-header h2 { font-size: 1.75rem; }
+    .btn-lg { padding: 0.875rem 1.75rem; font-size: 1rem; }
+}
